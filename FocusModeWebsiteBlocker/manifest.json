@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Focus Mode Blocker",
+  "version": "1.0.0",
+  "description": "Blocks selected sites when Focus Mode is enabled.",
+  "permissions": ["storage", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "sw.js" },
+  "options_page": "dist/options.html",
+  "action": { "default_title": "Focus Mode", "default_popup": "dist/popup.html"}
+}
+
