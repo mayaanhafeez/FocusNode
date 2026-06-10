@@ -1,9 +1,12 @@
 export const DEFAULTS = { focusOn: false, blockedHosts: [] };
 
+// Firefox exposes `browser`, Chrome exposes `chrome`; both are promise-based in MV3.
+export const api = globalThis.browser ?? globalThis.chrome;
+
 export async function loadSettings() {
   // Works in extension pages
-  if (window.chrome?.storage?.sync) {
-    return await window.chrome.storage.sync.get(DEFAULTS);
+  if (api?.storage?.sync) {
+    return await api.storage.sync.get(DEFAULTS);
   }
 
   // Dev fallback (popup.html opened in normal browser during dev)
@@ -12,8 +15,8 @@ export async function loadSettings() {
 }
 
 export async function saveSettings(partial) {
-  if (window.chrome?.storage?.sync) {
-    await window.chrome.storage.sync.set(partial);
+  if (api?.storage?.sync) {
+    await api.storage.sync.set(partial);
     return;
   }
 
@@ -24,12 +27,11 @@ export async function saveSettings(partial) {
 }
 
 export function onSettingsChanged(cb) {
-  if (!window.chrome?.storage?.onChanged) return () => {};
+  if (!api?.storage?.onChanged) return () => {};
   const handler = (changes, area) => {
     if (area !== "sync") return;
     if (changes.focusOn || changes.blockedHosts) cb();
   };
-  window.chrome.storage.onChanged.addListener(handler);
-  return () => window.chrome.storage.onChanged.removeListener(handler);
+  api.storage.onChanged.addListener(handler);
+  return () => api.storage.onChanged.removeListener(handler);
 }
-

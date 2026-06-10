@@ -1,108 +1,188 @@
 import { useEffect, useState } from "react";
-import { loadSettings, saveSettings, onSettingsChanged } from "./storage.js";
+import { api, loadSettings, saveSettings, onSettingsChanged } from "./storage.js";
+
+const rp = {
+  base: "#191724", surface: "#1f1d2e", overlay: "#26233a",
+  muted: "#6e6a86", subtle: "#908caa", text: "#e0def4",
+  love: "#eb6f92", rose: "#ebbcba",
+  pine: "#31748f", foam: "#9ccfd8",
+  hlLow: "#21202e",
+};
+const mono = "'ui-monospace','SFMono-Regular',Menlo,Monaco,Consolas,monospace";
 
 export default function PopupApp() {
   const [focusOn, setFocusOn] = useState(false);
-  const [count, setCount] = useState(0);
-
-  async function refresh() {
-    const s = await loadSettings();
-    setFocusOn(!!s.focusOn);
-    setCount(Array.isArray(s.blockedHosts) ? s.blockedHosts.length : 0);
-  }
+  const [count, setCount]     = useState(0);
 
   useEffect(() => {
-    refresh();
-    const unsub = onSettingsChanged(refresh);
-    return unsub;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const apply = (s) => {
+      setFocusOn(!!s.focusOn);
+      setCount(Array.isArray(s.blockedHosts) ? s.blockedHosts.length : 0);
+    };
+    loadSettings().then(apply);
+    return onSettingsChanged(() => loadSettings().then(apply));
   }, []);
 
   async function toggle() {
     const next = !focusOn;
     setFocusOn(next);
     await saveSettings({ focusOn: next });
-
-    // Optional: if turning ON, reload active tab so blocker triggers immediately
-    if (window.chrome?.tabs) {
-      const [tab] = await window.chrome.tabs.query({ active: true, currentWindow: true });
-      if (tab?.id) await window.chrome.tabs.reload(tab.id);
-    }
   }
 
   async function openOptions() {
-    if (window.chrome?.runtime?.openOptionsPage) {
-      await window.chrome.runtime.openOptionsPage();
-    }
+    if (api?.runtime?.openOptionsPage) await api.runtime.openOptionsPage();
   }
 
+  const accent = focusOn ? rp.love : rp.pine;
+  const accentFg = focusOn ? rp.rose : rp.foam;
+
   return (
-    <div
-      style={{
-        fontFamily: "system-ui",
-        padding: 12,
-        background: "#0b1220",
-        color: "#e5e7eb",
-        minHeight: 140,
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <div style={{ fontWeight: 800, fontSize: 14 }}>Focus Mode</div>
-          <div style={{ opacity: 0.75, fontSize: 12, marginTop: 2 }}>
-            {count} blocked site{count === 1 ? "" : "s"}
+    <div style={{
+      fontFamily: mono,
+      background: rp.base,
+      color: rp.text,
+      width: 240,
+      userSelect: "none",
+      border: `1px solid ${rp.overlay}`,
+    }}>
+      {/* Tabline */}
+      <div style={{
+        background: rp.surface,
+        borderBottom: `1px solid ${rp.overlay}`,
+        display: "flex",
+        alignItems: "stretch",
+        height: 28,
+      }}>
+        <div style={{
+          background: rp.base,
+          padding: "0 12px",
+          display: "flex",
+          alignItems: "center",
+          gap: 7,
+          borderRight: `1px solid ${rp.overlay}`,
+          fontSize: 11,
+          color: rp.subtle,
+        }}>
+          <span style={{ color: accent, fontSize: 9 }}>●</span>
+          focus-mode.lua
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: "12px 12px 10px" }}>
+        <div style={{ color: rp.muted, fontSize: 11, marginBottom: 10 }}>
+          -- FocusNode
+        </div>
+
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "8px 10px",
+          background: rp.hlLow,
+          border: `1px solid ${rp.overlay}`,
+          marginBottom: 8,
+        }}>
+          <div>
+            <div style={{ fontSize: 12, color: rp.text }}>Focus Mode</div>
+            <div style={{ fontSize: 11, color: rp.muted, marginTop: 2 }}>
+              {count} site{count === 1 ? "" : "s"} blocked
+            </div>
+          </div>
+          <div style={{
+            fontSize: 10,
+            fontWeight: 700,
+            padding: "2px 8px",
+            background: `${accent}20`,
+            border: `1px solid ${accent}66`,
+            color: accentFg,
+            letterSpacing: "0.1em",
+          }}>
+            {focusOn ? "ON" : "OFF"}
           </div>
         </div>
 
-        <span
+        <button
+          onClick={toggle}
           style={{
+            display: "block",
+            width: "100%",
+            padding: "7px 10px",
+            marginBottom: 5,
+            background: `${accent}15`,
+            border: `1px solid ${accent}55`,
+            color: accentFg,
+            fontFamily: mono,
             fontSize: 12,
-            padding: "6px 10px",
-            borderRadius: 999,
-            border: "1px solid rgba(148,163,184,.22)",
-            background: focusOn ? "rgba(34,197,94,.15)" : "rgba(148,163,184,.10)",
-            fontWeight: 800,
+            cursor: "pointer",
+            textAlign: "left",
+            outline: "none",
           }}
         >
-          {focusOn ? "ON" : "OFF"}
-        </span>
+          <span style={{ color: rp.muted }}>:</span>FocusToggle
+        </button>
+
+        <button
+          onClick={openOptions}
+          style={{
+            display: "block",
+            width: "100%",
+            padding: "7px 10px",
+            background: "transparent",
+            border: `1px solid ${rp.overlay}`,
+            color: rp.subtle,
+            fontFamily: mono,
+            fontSize: 12,
+            cursor: "pointer",
+            textAlign: "left",
+            outline: "none",
+          }}
+        >
+          <span style={{ color: rp.muted }}>:</span>Settings
+        </button>
       </div>
 
-      <button
-        onClick={toggle}
-        style={{
-          width: "100%",
-          marginTop: 12,
-          padding: "10px 12px",
-          borderRadius: 12,
-          border: "1px solid rgba(99,102,241,.45)",
-          background: "rgba(99,102,241,.22)",
-          color: "#e5e7eb",
-          cursor: "pointer",
-          fontWeight: 800,
-        }}
-      >
-        {focusOn ? "Turn Focus OFF" : "Turn Focus ON"}
-      </button>
-
-      <button
-        onClick={openOptions}
-        style={{
-          width: "100%",
-          marginTop: 8,
-          padding: "10px 12px",
-          borderRadius: 12,
-          border: "1px solid rgba(148,163,184,.22)",
-          background: "rgba(148,163,184,.10)",
-          color: "#e5e7eb",
-          cursor: "pointer",
+      {/* Statusline */}
+      <div style={{
+        background: rp.surface,
+        borderTop: `1px solid ${rp.overlay}`,
+        display: "flex",
+        alignItems: "stretch",
+        height: 22,
+      }}>
+        <div style={{
+          background: accent,
+          color: rp.base,
+          padding: "0 8px",
+          display: "flex",
+          alignItems: "center",
           fontWeight: 700,
-        }}
-      >
-        Open settings
-      </button>
+          fontSize: 10,
+          letterSpacing: "0.08em",
+        }}>
+          {focusOn ? "FOCUSED" : "NORMAL"}
+        </div>
+        <div style={{
+          padding: "0 8px",
+          display: "flex",
+          alignItems: "center",
+          color: rp.subtle,
+          fontSize: 10,
+          borderRight: `1px solid ${rp.overlay}`,
+        }}>
+          focus-mode.lua
+        </div>
+        <div style={{
+          marginLeft: "auto",
+          padding: "0 8px",
+          display: "flex",
+          alignItems: "center",
+          color: rp.muted,
+          fontSize: 10,
+        }}>
+          {count} sites
+        </div>
+      </div>
     </div>
   );
 }
-
-

@@ -20,7 +20,7 @@ function removeCrossoriginPlugin() {
           // Remove crossorigin attribute from script and link tags
           content = content.replace(/\s*crossorigin/g, "");
           writeFileSync(filePath, content, "utf-8");
-        } catch (err) {
+        } catch {
           // File might not exist, skip
         }
       });

@@ -1,29 +1,23 @@
+const api = globalThis.browser ?? globalThis.chrome;
+
 const params = new URLSearchParams(location.search);
 const site = params.get("site") || "(unknown site)";
-const originalUrl = params.get("originalUrl") || null;
 document.getElementById("site").textContent = site;
+document.getElementById("statusSite").textContent = site;
 
-document.getElementById("back").onclick = () => history.back();
+document.getElementById("back").onclick = () => {
+  // The previous history entry is the blocked URL itself, which would
+  // immediately re-trigger the block. Skip past it when possible.
+  if (history.length > 2) history.go(-2);
+  else history.back();
+};
 
 document.getElementById("openOptions").onclick = async () => {
-  // Opens your React options page
-  await chrome.runtime.openOptionsPage();
+  await api.runtime.openOptionsPage();
 };
 
 document.getElementById("turnOff").onclick = async () => {
-  // Turn off focus mode
-  await chrome.storage.sync.set({ focusOn: false });
-  
-  // Navigate back to the original URL if we have it
-  if (originalUrl && (originalUrl.startsWith("http://") || originalUrl.startsWith("https://"))) {
-    // Get the current tab (the blocked page) and navigate to the original URL
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tab?.id) {
-      await chrome.tabs.update(tab.id, { url: originalUrl });
-    }
-  } else {
-    // Fallback: just go back in history
-    history.back();
-  }
+  // The background script restores all blocked tabs (including this one)
+  // to their original URLs when focusOn flips to false.
+  await api.storage.sync.set({ focusOn: false });
 };
-
