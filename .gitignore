@@ -37,4 +37,5 @@ Thumbs.db
 
 # Packaged extension
 *.xpi
+*.zip
 
