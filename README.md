@@ -8,7 +8,7 @@ A browser extension that helps you stay focused by blocking distracting websites
 
 ## Screenshots
 
-<img src="store-screenshots/screenshot-1-popup.png" width="420" alt="FocusNode popup showing the Focus Mode toggle, currently off with 2 sites blocked">   <img src="store-screenshots/screenshot-2-options.png" width="420" alt="FocusNode settings page listing blocked sites (instagram.com, youtube.com) with an add-site input">
+<img src="screenshots/popup.png" width="260" alt="FocusNode popup showing the Focus Mode toggle, currently off with 2 sites blocked">   <img src="screenshots/options.png" width="560" alt="FocusNode settings page listing blocked sites (instagram.com, youtube.com) with an add-site input">
 
 ## Features
 
