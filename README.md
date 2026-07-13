@@ -4,7 +4,7 @@ A browser extension that helps you stay focused by blocking distracting websites
 
 **FocusNode** is a pun on Node.js and "focus mode" - because staying focused should be as essential as Node.js is to modern development!
 
-**Chrome**: [Available on the Chrome Web Store](https://chromewebstore.google.com/detail/focus-mode-blocker/bhkiedimpjpeoggbodjedjcopedhdaoo) · **Firefox**: [Available on Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/focus-mode-blocker1/)
+**Chrome**: [Available on the Chrome Web Store](https://chromewebstore.google.com/detail/focus-mode-blocker/bhkiedimpjpeoggbodjedjcopedhdaoo) · **Firefox**: [Available on Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/focusnode-website-blocker/)
 
 ## Screenshots
 
@@ -54,7 +54,7 @@ Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/foc
 
 ### Firefox
 
-Install from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/focus-mode-blocker1/) — the easiest way. For a development build instead, Firefox requires extensions to be signed; the easiest path for personal use is to install on Firefox Nightly or Developer Edition, which allow unsigned extensions.
+Install from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/focusnode-website-blocker/) — the easiest way. For a development build instead, Firefox requires extensions to be signed; the easiest path for personal use is to install on Firefox Nightly or Developer Edition, which allow unsigned extensions.
 
 **Firefox Nightly / Developer Edition:**
 
