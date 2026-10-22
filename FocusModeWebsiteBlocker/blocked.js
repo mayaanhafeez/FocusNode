@@ -17,7 +17,21 @@ document.getElementById("openOptions").onclick = async () => {
 };
 
 document.getElementById("turnOff").onclick = async () => {
-  // The background script restores all blocked tabs (including this one)
-  // to their original URLs when focusOn flips to false.
-  await api.storage.sync.set({ focusOn: false });
+  // End an active pomodoro too; manual focus cannot override a running phase.
+  const response = await api.runtime.sendMessage({ type: "pomodoro:manual", focusOn: false });
+  if (!response?.ok) document.getElementById("phaseDescription").textContent = response?.error || "Could not turn off Focus Mode. Try reloading the extension.";
 };
+
+document.getElementById("openTimer").onclick = () => api.tabs.create({ url: api.runtime.getURL("dist/timer.html") });
+
+async function updatePhaseMessage() {
+  const { pomodoro } = await api.storage.local.get("pomodoro");
+  document.getElementById("phaseMessage").hidden = !pomodoro?.lastRestEndedAt;
+  document.getElementById("phaseDescription").textContent = pomodoro?.status === "complete"
+    ? "all pomodoro cycles finished — focus mode is still on"
+    : "blocked during your focus session";
+}
+api.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.pomodoro) void updatePhaseMessage();
+});
+void updatePhaseMessage();

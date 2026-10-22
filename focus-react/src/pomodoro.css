@@ -1,0 +1,68 @@
+.pomodoro-panel, .pip-timer, .focusnode-popup {
+  --timer-base: #191724;
+  --timer-surface: #1f1d2e;
+  --timer-border: #403d52;
+  --timer-text: #e0def4;
+  --timer-subtle: #908caa;
+  --timer-accent: #ebbcba;
+  font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+  color: var(--timer-text);
+  background: var(--timer-base);
+  font-size: 12px;
+  box-sizing: border-box;
+}
+.pomodoro-panel { border: 1px solid #26233a; padding: 20px; margin-bottom: 30px; }
+.pomodoro-panel *, .pip-timer * { box-sizing: border-box; }
+.timer-eyebrow { color: var(--timer-subtle); font-size: 11px; margin-bottom: 20px; display: flex; justify-content: space-between; gap: 8px; }
+.timer-eyebrow > span { color: #6e6a86; font-size: 10px; }
+.timer-display { --phase-accent: #ebbcba; }
+.timer-display.is-rest { --phase-accent: #9ccfd8; }
+.timer-mode-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.timer-mode { display: inline-flex; align-items: center; gap: 7px; color: var(--phase-accent); font-size: 10px; font-weight: 700; letter-spacing: .16em; }
+.timer-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--phase-accent); box-shadow: 0 0 10px color-mix(in srgb, var(--phase-accent) 25%, transparent); }
+.timer-cycle { color: var(--timer-subtle); font-size: 10px; }
+.flip-clock { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 auto 20px; font-variant-numeric: tabular-nums; perspective: 700px; }
+.flip-group { display: flex; gap: 5px; min-width: 0; }
+.flip-digit { position: relative; display: inline-flex; justify-content: center; align-items: center; width: clamp(30px, 9vw, 64px); height: 88px; border-radius: 7px; background: linear-gradient(#2c293e 49%, #191724 49%, #191724 51%, #252235 51%); border: 1px solid #403d52; box-shadow: 0 5px 0 #100f18, 0 8px 14px #0003, inset 0 1px 0 #ffffff08; overflow: hidden; }
+.flip-digit::before, .flip-digit::after { content: ""; position: absolute; z-index: 3; width: 3px; height: 9px; top: calc(50% - 4px); border-radius: 2px; background: #6e6a86; }
+.flip-digit::before { left: 1px; }
+.flip-digit::after { right: 1px; }
+.flip-digit-value { display: block; color: var(--timer-text); font-size: 64px; font-weight: 600; letter-spacing: -.08em; padding-right: .08em; line-height: 1; text-shadow: 0 2px 1px #0005; animation: digit-flip .28s ease-out; transform-origin: center; }
+.flip-seam { position: absolute; top: 50%; width: 100%; height: 2px; background: #100f18bb; box-shadow: 0 1px 0 #ffffff05; }
+.flip-colon { font-size: 32px; color: #6e6a86; margin-bottom: 6px; }
+@keyframes digit-flip { from { transform: rotateX(-45deg); opacity: .5; } to { transform: rotateX(0); opacity: 1; } }
+.timer-progress { height: 4px; width: 100%; background: #26233a; border-radius: 5px; overflow: hidden; }
+.timer-progress > div { height: 100%; background: var(--phase-accent); transition: width .25s linear; border-radius: inherit; }
+.timer-caption { display: flex; justify-content: space-between; gap: 10px; color: var(--timer-subtle); font-size: 10px; line-height: 1.7; margin: 8px 0 20px; }
+.timer-caption > span:last-child { white-space: nowrap; }
+.timer-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.timer-playback { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.timer-fields label { color: var(--timer-subtle); font-size: 10px; }
+.timer-fields input { display: block; width: 100%; min-width: 0; margin-top: 6px; padding: 9px 10px; border: 1px solid var(--timer-border); border-radius: 3px; color: var(--timer-text); background: var(--timer-surface); font: inherit; font-size: 13px; color-scheme: dark; }
+.timer-button { display: block; width: 100%; padding: 9px 12px; margin-top: 8px; border: 1px solid var(--timer-border); border-radius: 3px; font: inherit; font-size: 11px; color: var(--timer-text); background: var(--timer-surface); cursor: pointer; text-align: center; }
+.timer-primary { color: #ebbcba; background: #ebbcba10; border-color: #ebbcba55; }
+.timer-secondary { color: #9ccfd8; background: #9ccfd807; border-color: #31748f66; }
+.timer-button:hover { filter: brightness(1.2); }
+.timer-button:disabled { opacity: .5; cursor: wait; }
+.pomodoro-panel :focus-visible, .pip-timer :focus-visible, .focusnode-popup :focus-visible { outline: 2px solid #9ccfd8; outline-offset: 3px; }
+.timer-hint { font-size: 10px; line-height: 1.7; color: var(--timer-subtle); margin: 10px 0 0; }
+.timer-error { color: #eb6f92; line-height: 1.6; padding: 8px 0; font-size: 11px; }
+.rest-over { color: #f6c177; font-size: 16px; font-weight: 600; margin: -2px 0 16px; }
+.timer-compact { padding: 14px; margin: 12px 0 0; }
+.timer-compact .timer-eyebrow { margin-bottom: 14px; }
+.timer-compact .timer-eyebrow > span { display: none; }
+.timer-compact .flip-digit { width: 46px; height: 66px; }
+.timer-compact .flip-digit-value { font-size: 47px; }
+.timer-compact .flip-clock { gap: 6px; margin-bottom: 16px; }
+.timer-compact .timer-caption { margin-bottom: 14px; }
+.timer-page-body, .timer-pip-body { margin: 0; background: #191724; color: #e0def4; color-scheme: dark; }
+.timer-page { max-width: 560px; margin: 0 auto; padding: 18px; }
+.timer-page-header { display: flex; align-items: center; justify-content: space-between; color: #908caa; font: 11px 'SFMono-Regular', Menlo, monospace; margin: 0 0 16px; }
+.timer-page-header button { background: none; border: 0; color: #9ccfd8; cursor: pointer; font: inherit; }
+.timer-standalone { margin: 0; }
+.pip-timer { padding: 18px; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+.pip-timer .flip-digit { width: clamp(30px, 14vw, 64px); height: clamp(50px, 24vw, 88px); }
+.pip-timer .flip-digit-value { font-size: clamp(36px, 17vw, 64px); }
+.pip-timer .timer-caption { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { .flip-digit-value { animation: none; } .timer-progress > div { transition: none; } }
+@media (max-width: 380px) { .timer-page { padding: 10px; } .timer-standalone { padding: 14px; } .timer-eyebrow > span { display: none; } .flip-digit { height: 64px; } .flip-digit-value { font-size: 46px; } }
