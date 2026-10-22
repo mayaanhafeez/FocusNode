@@ -12,7 +12,7 @@ function removeCrossoriginPlugin() {
     name: "remove-crossorigin",
     writeBundle() {
       const distDir = path.resolve(__dirname, "../FocusModeWebsiteBlocker/dist");
-      const htmlFiles = ["popup.html", "options.html"];
+      const htmlFiles = ["popup.html", "options.html", "timer.html"];
       htmlFiles.forEach((fileName) => {
         const filePath = path.join(distDir, fileName);
         try {
@@ -38,9 +38,9 @@ export default defineConfig({
       input: {
         options: path.resolve(__dirname, "options.html"),
         popup: path.resolve(__dirname, "popup.html"),
+        timer: path.resolve(__dirname, "timer.html"),
       },
     },
   },
 });
-
 
