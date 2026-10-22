@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { loadSettings, saveSettings, onSettingsChanged } from "./storage.js";
+import PomodoroPanel from "./PomodoroPanel.jsx";
 
 const rp = {
   base: "#191724", surface: "#1f1d2e", overlay: "#26233a",
@@ -55,8 +56,8 @@ export default function OptionsApp() {
 
   async function toggleFocus() {
     const next = !focusOn;
-    setFocusOn(next);
-    await saveSettings({ focusOn: next });
+    try { await saveSettings({ focusOn: next }); }
+    catch (err) { setError(err.message); }
   }
 
   async function addSite(e) {
@@ -144,6 +145,7 @@ export default function OptionsApp() {
               </div>
               <button
                 onClick={toggleFocus}
+                title="Manual focus control ends any pomodoro session"
                 style={{
                   padding: "6px 16px",
                   background: `${accent}15`,
@@ -159,6 +161,8 @@ export default function OptionsApp() {
               </button>
             </div>
           </section>
+
+          <PomodoroPanel />
 
           {/* ── add site ── */}
           <section style={{ marginBottom: 36 }}>

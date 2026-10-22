@@ -163,12 +163,14 @@
       </div>
       <div class="card-body">
         <div class="section-label">-- access denied</div>
+        <div id="phaseMessage" style="color:var(--rose);font-size:24px;margin-bottom:16px" role="status" hidden>Rest time over</div>
         <div class="site-name" id="site"></div>
-        <div class="site-desc">blocked during your focus session</div>
+        <div class="site-desc" id="phaseDescription">blocked during your focus session</div>
         <hr class="divider" />
         <div class="actions">
           <button class="btn" id="back"><span style="color:var(--muted)">:</span>GoBack</button>
           <button class="btn btn-primary" id="openOptions"><span style="color:#31748f88">:</span>Settings</button>
+          <button class="btn btn-primary" id="openTimer">:Timer</button>
           <button class="btn btn-off" id="turnOff"><span style="color:#eb6f9288">:</span>FocusOff</button>
         </div>
       </div>
