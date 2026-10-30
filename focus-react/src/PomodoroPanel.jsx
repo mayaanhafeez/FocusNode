@@ -19,7 +19,7 @@ function TimerSetup({ initialConfig, onStart, busy }) {
   </form>;
 }
 
-export default function PomodoroPanel({ compact = false, standalone = false }) {
+export default function PomodoroPanel({ compact = false, standalone = false, launcher = false }) {
   const { settings, now, error: loadError } = usePomodoro();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -32,6 +32,12 @@ export default function PomodoroPanel({ compact = false, standalone = false }) {
     try { await timerCommand(action, data); }
     catch (err) { setError(err.message); }
     finally { setBusy(false); }
+  }
+
+  if (launcher) {
+    return <section className="pomodoro-panel timer-launcher" aria-label="Pomodoro timer">
+      <FloatingTimer session={session} config={config} now={now} launcher busy={busy} onCommand={command} commandError={error} />
+    </section>;
   }
 
   return <section className={`pomodoro-panel ${compact ? "timer-compact" : ""} ${standalone ? "timer-standalone" : ""}`} aria-label="Pomodoro timer">
