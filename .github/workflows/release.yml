@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only check store credentials; don't upload or submit"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: focus-react/package-lock.json
+
+      - name: Check tag matches manifest version
+        if: github.ref_type == 'tag'
+        run: |
+          manifest_version=$(node -p "require('./FocusModeWebsiteBlocker/manifest.json').version")
+          if [ "v$manifest_version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match manifest.json version $manifest_version"
+            exit 1
+          fi
+
+      - name: Install, test, lint, build
+        working-directory: focus-react
+        run: |
+          npm ci
+          npm test
+          npm run lint
+          npm run build
+
+      - name: Package extension and sources
+        run: |
+          mkdir -p out
+          (cd FocusModeWebsiteBlocker && zip -r ../out/focusnode-extension.zip . -x ".gitignore" "*.DS_Store")
+          git archive --format=zip -o out/focusnode-source.zip HEAD
+
+      - name: Submit to Chrome Web Store and Firefox Add-ons
+        run: >
+          npx --yes publish-browser-extension@6.2.0
+          --chrome-zip out/focusnode-extension.zip
+          --firefox-zip out/focusnode-extension.zip
+          --firefox-sources-zip out/focusnode-source.zip
+          ${{ inputs.dry_run && '--dry-run' || '' }}
+        env:
+          CHROME_API_VERSION: v2
+          CHROME_EXTENSION_ID: bhkiedimpjpeoggbodjedjcopedhdaoo
+          CHROME_PUBLISHER_ID: ${{ secrets.CHROME_PUBLISHER_ID }}
+          CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          CHROME_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.CHROME_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          FIREFOX_EXTENSION_ID: focusnode@ayaanhafeez.dev
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
+
+      - name: Create GitHub release
+        if: github.ref_type == 'tag'
+        run: gh release create "$GITHUB_REF_NAME" out/*.zip --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

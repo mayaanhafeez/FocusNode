@@ -159,6 +159,16 @@ npm run lint
 
 Then reload the extension in your browser.
 
+### Releasing
+
+Bump `version` in `FocusModeWebsiteBlocker/manifest.json`, commit, then push a matching tag:
+
+```bash
+git tag v1.2.0 && git push origin v1.2.0
+```
+
+`.github/workflows/release.yml` builds the extension, submits it to the Chrome Web Store and Firefox Add-ons (with the source zip AMO requires), and creates a GitHub release with both zips attached. Run the workflow by hand from the Actions tab (dry run on by default) to check the store credentials without uploading.
+
 ## Permissions
 
 - **storage** — saves your settings and block list
