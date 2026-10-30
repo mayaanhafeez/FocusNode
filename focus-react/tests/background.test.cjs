@@ -94,6 +94,7 @@ test("pause clears the alarm, play recreates it, skip immediately applies blocki
   assert.equal(bg.tabs[0].url, "https://www.example.com/watch");
   await bg.command("skip");
   assert.match(bg.tabs[0].url, /blocked.html\?/);
+  assert.ok(!bg.tabs.some((tab) => tab.url.endsWith("dist/timer.html")));
 });
 
 test("manual toggle cancels a timer, stale alarms cannot restart it", async () => {
