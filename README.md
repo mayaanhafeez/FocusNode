@@ -125,7 +125,7 @@ Install from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/fo
 
 The timer continues with its popup closed and recovers its schedule after a browser restart or computer sleep. Browser alarms may be delayed while the computer is asleep; FocusNode catches up when it wakes.
 
-**Floating timer:** from the popup, click **Floating timer**, then **Picture-in-picture** in the timer window for an always-on-top clock. Settings also offers PiP directly. Keep the originating page/window open while using PiP. Firefox/Zen and browsers without Document Picture-in-Picture use a regular compact window instead (not always on top).
+**Floating timer:** from the popup, click **Floating timer**, then **Pop out timer** in the small launcher window for an always-on-top clock; the launcher minimizes itself and closes when the PiP clock is closed. Settings also offers PiP directly (keep that tab open while using it). Firefox/Zen and browsers without Document Picture-in-Picture use a regular compact window instead (not always on top).
 
 FocusNode controls websites, not native desktop applications. Timer settings/session state are local to each browser, not synced between devices.
 
