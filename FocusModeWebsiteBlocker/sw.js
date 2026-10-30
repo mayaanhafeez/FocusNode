@@ -168,12 +168,10 @@ api.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         const pomodoro = timer[action](settings.pomodoro);
         await api.storage.local.set({ pomodoro });
         if (action === "skip" && pomodoro !== settings.pomodoro) {
-          // Show the rest-over screen only after site blocking has been applied.
+          // A manual skip doesn't open the rest-over screen: the user already knows,
+          // and focusing a new tab would close the popup they skipped from.
           await reconcile({ enforce: true, announce: false });
           await playPing();
-          if (pomodoro?.lastRestEndedAt && pomodoro.lastRestEndedAt !== settings.pomodoro?.lastRestEndedAt) {
-            await showRestOver();
-          }
         }
         break;
       }
